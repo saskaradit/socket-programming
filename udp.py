@@ -4,6 +4,18 @@ import socket
 MAX_SIZE_BYTES = 65535  # Mazimum size of a UDP datagram
 
 
+def recvall(sock, length):
+    data = b''
+    while len(data) < length:
+        more = sock.recv(length - len(data))
+        if not more:
+            raise EOFError('was expecting %d bytes but only received'
+                           ' %d bytes before the socket closed'
+                           % (length, len(data)))
+        data += more
+    return data
+
+
 def server(port):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     hostname = '127.0.0.1'
